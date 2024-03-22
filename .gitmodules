@@ -257,9 +257,9 @@
 [submodule "contrib/nats-io"]
 	path = contrib/nats-io
 	url = https://github.com/ClickHouse/nats.c
-[submodule "contrib/vectorscan"]
-	path = contrib/vectorscan
-	url = https://github.com/VectorCamp/vectorscan.git
+[submodule "contrib/hyperscan"]
+	path = contrib/hyperscan
+	url = https://github.com/intel/hyperscan.git
 [submodule "contrib/llvm-project"]
 	path = contrib/llvm-project
 	url = https://github.com/ClickHouse/llvm-project
