@@ -17,7 +17,7 @@
 
 #include "config.h"
 
-#if USE_VECTORSCAN
+#if USE_HYPERSCAN
 #    include <hs.h>
 #endif
 
@@ -97,7 +97,7 @@ private:
 
 }
 
-#if USE_VECTORSCAN
+#if USE_HYPERSCAN
 
 namespace MultiRegexps
 {
@@ -341,6 +341,6 @@ inline DeferredConstructedRegexpsPtr getOrSet(const std::vector<std::string_view
 
 }
 
-#endif // USE_VECTORSCAN
+#endif // USE_HYPERSCAN
 
 }

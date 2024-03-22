@@ -2684,7 +2684,6 @@ varint
 varpop
 varsamp
 vectorized
-vectorscan
 verificationDepth
 verificationMode
 versionedcollapsingmergetree
