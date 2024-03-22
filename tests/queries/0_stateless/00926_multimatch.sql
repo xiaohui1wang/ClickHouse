@@ -1,4 +1,4 @@
--- Tags: no-fasttest, use-vectorscan
+-- Tags: no-fasttest, use-hyperscan
 
 SELECT '-- With const pattern';
 

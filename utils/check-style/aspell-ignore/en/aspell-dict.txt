@@ -2769,7 +2769,6 @@ varint
 varpop
 varsamp
 vectorized
-vectorscan
 vendoring
 verificationDepth
 verificationMode

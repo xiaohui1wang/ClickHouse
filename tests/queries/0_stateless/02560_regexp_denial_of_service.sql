@@ -1,4 +1,4 @@
--- Tags: no-fasttest, use-vectorscan
+-- Tags: no-fasttest, use-hyperscan
 
 DROP TABLE IF EXISTS t;
 
@@ -32,7 +32,7 @@ SELECT multiMatchAny('test', ['prefix.{1,51}']); -- { serverError HYPERSCAN_CANN
 SELECT multiMatchAny('test', ['.{1,51}.suffix']); -- { serverError HYPERSCAN_CANNOT_SCAN_TEXT }
 SELECT multiMatchAny('test', ['.{4,4}midfix{1,51}']); -- { serverError HYPERSCAN_CANNOT_SCAN_TEXT }
 
--- test that the check is implemented in all functions which use vectorscan
+-- test that the check is implemented in all functions which use hyperscan
 
 CREATE TABLE t(c String) Engine=MergeTree() ORDER BY c;
 INSERT INTO t VALUES('Hallo Welt');
