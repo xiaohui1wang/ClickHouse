@@ -32,7 +32,7 @@
 
 #include "config.h"
 
-#if USE_VECTORSCAN
+#if USE_HYPERSCAN
 #    include <hs.h>
 #    include <hs_compile.h>
 #endif
@@ -237,12 +237,12 @@ void RegExpTreeDictionary::initRegexNodes(Block & block)
         }
         regex_nodes.emplace(id, node);
 
-#if USE_VECTORSCAN
+#if USE_HYPERSCAN
         String required_substring;
         bool is_trivial, required_substring_is_prefix;
         std::vector<std::string> alternatives;
 
-        if (use_vectorscan)
+        if (use_hyperscan)
             OptimizedRegularExpression::analyze(regex, required_substring, is_trivial, required_substring_is_prefix, alternatives);
 
         for (auto & alter : alternatives)
@@ -324,11 +324,11 @@ void RegExpTreeDictionary::loadData()
         LOG_INFO(logger, "There are {} simple regexps and {} complex regexps", simple_regexps.size(), complex_regexp_nodes.size());
         /// If all the regexps cannot work with hyperscan, we should set this flag off to avoid exceptions.
         if (simple_regexps.empty())
-            use_vectorscan = false;
-        if (!use_vectorscan)
+            use_hyperscan = false;
+        if (!use_hyperscan)
             return;
 
-#if USE_VECTORSCAN
+#if USE_HYPERSCAN
         std::vector<const char *> patterns;
         std::vector<unsigned int> flags;
         std::vector<size_t> lengths;
@@ -377,7 +377,7 @@ void RegExpTreeDictionary::loadData()
         origin_scratch.reset(scratch);
         /// If not HS_SUCCESS, it is guaranteed that the memory would not be allocated for scratch.
         if (err != HS_SUCCESS)
-            throw Exception(ErrorCodes::CANNOT_ALLOCATE_MEMORY, "Could not allocate scratch space for vectorscan");
+            throw Exception(ErrorCodes::CANNOT_ALLOCATE_MEMORY, "Could not allocate scratch space for hyperscan");
 #endif
 
     }
@@ -392,14 +392,14 @@ RegExpTreeDictionary::RegExpTreeDictionary(
     const DictionaryStructure & structure_,
     DictionarySourcePtr source_ptr_,
     Configuration configuration_,
-    bool use_vectorscan_,
+    bool use_hyperscan_,
     bool flag_case_insensitive_,
     bool flag_dotall_)
     : IDictionary(id_),
       structure(structure_),
       source_ptr(source_ptr_),
       configuration(configuration_),
-      use_vectorscan(use_vectorscan_),
+      use_hyperscan(use_hyperscan_),
       flag_case_insensitive(flag_case_insensitive_),
       flag_dotall(flag_dotall_),
       logger(getLogger("RegExpTreeDictionary"))
@@ -683,9 +683,9 @@ std::unordered_map<String, ColumnPtr> RegExpTreeDictionary::match(
     assert(is_short_circuit || std::holds_alternative<RefDefaultMap>(default_or_filter));
 
 
-#if USE_VECTORSCAN
+#if USE_HYPERSCAN
     hs_scratch_t * scratch = nullptr;
-    if (use_vectorscan)
+    if (use_hyperscan)
     {
         hs_error_t err = hs_clone_scratch(origin_scratch.get(), &scratch);
 
@@ -730,8 +730,8 @@ std::unordered_map<String, ColumnPtr> RegExpTreeDictionary::match(
 
         MatchContext match_result(regexp_ids, topology_order, begin, length, regex_nodes);
 
-#if USE_VECTORSCAN
-        if (use_vectorscan)
+#if USE_HYPERSCAN
+        if (use_hyperscan)
         {
             /// pre-select all the possible matches
             auto on_match = [](unsigned int id,
@@ -754,7 +754,7 @@ std::unordered_map<String, ColumnPtr> RegExpTreeDictionary::match(
                 &match_result);
 
             if (err != HS_SUCCESS)
-                throw Exception(ErrorCodes::HYPERSCAN_CANNOT_SCAN_TEXT, "Failed to scan data with vectorscan");
+                throw Exception(ErrorCodes::HYPERSCAN_CANNOT_SCAN_TEXT, "Failed to scan data with hyperscan");
 
         }
 #endif

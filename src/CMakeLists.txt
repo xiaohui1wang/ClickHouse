@@ -506,8 +506,8 @@ if (TARGET ch_contrib::s2)
     dbms_target_link_libraries (PUBLIC ch_contrib::s2)
 endif()
 
-if (TARGET ch_contrib::vectorscan)
-    dbms_target_link_libraries (PRIVATE ch_contrib::vectorscan)
+if (TARGET ch_contrib::hyperscan)
+    dbms_target_link_libraries (PRIVATE ch_contrib::hyperscan)
 endif()
 
 if (TARGET ch_contrib::brotli)

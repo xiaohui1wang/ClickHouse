@@ -84,7 +84,7 @@ struct MultiMatchAllIndicesImpl
             SlowWithHyperscanChecker checker;
             for (auto needle : needles)
                 if (checker.isSlow(needle))
-                    throw Exception(ErrorCodes::HYPERSCAN_CANNOT_SCAN_TEXT, "Regular expression evaluation in vectorscan will be too slow. To ignore this error, disable setting 'reject_expensive_hyperscan_regexps'.");
+                    throw Exception(ErrorCodes::HYPERSCAN_CANNOT_SCAN_TEXT, "Regular expression evaluation in hyperscan will be too slow. To ignore this error, disable setting 'reject_expensive_hyperscan_regexps'.");
         }
 
         offsets.resize(haystack_offsets.size());
@@ -213,7 +213,7 @@ struct MultiMatchAllIndicesImpl
                 SlowWithHyperscanChecker checker;
                 for (auto needle : needles)
                     if (checker.isSlow(needle))
-                        throw Exception(ErrorCodes::HYPERSCAN_CANNOT_SCAN_TEXT, "Regular expression evaluation in vectorscan will be too slow. To ignore this error, disable setting 'reject_expensive_hyperscan_regexps'.");
+                        throw Exception(ErrorCodes::HYPERSCAN_CANNOT_SCAN_TEXT, "Regular expression evaluation in hyperscan will be too slow. To ignore this error, disable setting 'reject_expensive_hyperscan_regexps'.");
             }
 
             MultiRegexps::DeferredConstructedRegexpsPtr deferred_constructed_regexps = MultiRegexps::getOrSet</*SaveIndices*/ true, WithEditDistance>(needles, edit_distance);
@@ -222,7 +222,7 @@ struct MultiMatchAllIndicesImpl
             hs_error_t err = hs_clone_scratch(regexps->getScratch(), &scratch);
 
             if (err != HS_SUCCESS)
-                throw Exception(ErrorCodes::CANNOT_ALLOCATE_MEMORY, "Could not clone scratch space for vectorscan");
+                throw Exception(ErrorCodes::CANNOT_ALLOCATE_MEMORY, "Could not clone scratch space for hyperscan");
 
             MultiRegexps::ScratchPtr smart_scratch(scratch);
 
@@ -238,7 +238,7 @@ struct MultiMatchAllIndicesImpl
 
             const size_t cur_haystack_length = haystack_offsets[i] - prev_haystack_offset - 1;
 
-            /// vectorscan restriction.
+            /// hyperscan restriction.
             if (cur_haystack_length > std::numeric_limits<UInt32>::max())
                 throw Exception(ErrorCodes::TOO_MANY_BYTES, "Too long string to search");
 
@@ -252,7 +252,7 @@ struct MultiMatchAllIndicesImpl
                 on_match,
                 &res);
             if (err != HS_SUCCESS)
-                throw Exception(ErrorCodes::HYPERSCAN_CANNOT_SCAN_TEXT, "Failed to scan with vectorscan");
+                throw Exception(ErrorCodes::HYPERSCAN_CANNOT_SCAN_TEXT, "Failed to scan with hyperscan");
 
             offsets[i] = res.size();
 
@@ -271,7 +271,7 @@ struct MultiMatchAllIndicesImpl
         (void)max_hyperscan_regexp_length;
         (void)max_hyperscan_regexp_total_length;
         (void)reject_expensive_hyperscan_regexps;
-        throw Exception(ErrorCodes::NOT_IMPLEMENTED, "multi-search all indices is not implemented when vectorscan is off");
+        throw Exception(ErrorCodes::NOT_IMPLEMENTED, "multi-search all indices is not implemented when hyperscan is off");
 #endif // USE_HYPERSCAN
     }
 };

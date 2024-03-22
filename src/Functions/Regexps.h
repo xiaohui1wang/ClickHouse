@@ -253,13 +253,13 @@ inline Regexps constructRegexps(const std::vector<String> & str_patterns, [[mayb
 
     /// If not HS_SUCCESS, it is guaranteed that the memory would not be allocated for scratch.
     if (err != HS_SUCCESS)
-        throw Exception(ErrorCodes::CANNOT_ALLOCATE_MEMORY, "Could not allocate scratch space for vectorscan");
+        throw Exception(ErrorCodes::CANNOT_ALLOCATE_MEMORY, "Could not allocate scratch space for hyperscan");
 
     return {db, scratch};
 }
 
-/// Maps string pattern vectors + edit distance to compiled vectorscan regexps. Uses the same eviction mechanism as the LocalCacheTable for
-/// re2 patterns. Because vectorscan regexes are overall more heavy-weight (more expensive compilation, regexes can grow up to multiple
+/// Maps string pattern vectors + edit distance to compiled hyperscan regexps. Uses the same eviction mechanism as the LocalCacheTable for
+/// re2 patterns. Because hyperscan regexes are overall more heavy-weight (more expensive compilation, regexes can grow up to multiple
 /// MBs, usage of scratch space), 1. GlobalCacheTable is a global singleton and, as a result, needs locking 2. the pattern compilation is
 /// done outside GlobalCacheTable's lock, at the cost of another level of locking.
 struct GlobalCacheTable
@@ -270,7 +270,7 @@ struct GlobalCacheTable
     {
         std::vector<String> patterns;          /// key
         std::optional<UInt32> edit_distance;   /// key
-        /// The compiled patterns and their state (vectorscan 'database' + scratch space) are wrapped in a shared_ptr. Refcounting guarantees
+        /// The compiled patterns and their state (hyperscan 'database' + scratch space) are wrapped in a shared_ptr. Refcounting guarantees
         /// that eviction of a pattern does not affect parallel threads still using the pattern.
         DeferredConstructedRegexpsPtr regexps; /// value
     };

@@ -52,8 +52,8 @@ if (TARGET ch_contrib::yaml_cpp)
     target_link_libraries(clickhouse_dictionaries PRIVATE ch_contrib::yaml_cpp)
 endif()
 
-if (TARGET ch_contrib::vectorscan)
-    target_link_libraries(clickhouse_dictionaries PRIVATE ch_contrib::vectorscan)
+if (TARGET ch_contrib::hyperscan)
+    target_link_libraries(clickhouse_dictionaries PRIVATE ch_contrib::hyperscan)
 endif()
 
 add_subdirectory(Embedded)

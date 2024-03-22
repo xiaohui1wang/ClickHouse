@@ -50,7 +50,7 @@ public:
         const DictionaryStructure & structure_,
         DictionarySourcePtr source_ptr_,
         Configuration configuration_,
-        bool use_vectorscan_,
+        bool use_hyperscan_,
         bool flag_case_insensitive_,
         bool flag_dotall_);
 
@@ -89,7 +89,7 @@ public:
     std::shared_ptr<const IExternalLoadable> clone() const override
     {
         return std::make_shared<RegExpTreeDictionary>(
-            getDictionaryID(), structure, source_ptr->clone(), configuration, use_vectorscan, flag_case_insensitive, flag_dotall);
+            getDictionaryID(), structure, source_ptr->clone(), configuration, use_hyperscan, flag_case_insensitive, flag_dotall);
     }
 
     ColumnUInt8::Ptr hasKeys(const Columns &, const DataTypes &) const override
@@ -215,7 +215,7 @@ private:
     struct RegexTreeNode;
     using RegexTreeNodePtr = std::shared_ptr<RegexTreeNode>;
 
-    bool use_vectorscan;
+    bool use_hyperscan;
     bool flag_case_insensitive;
     bool flag_dotall;
 
@@ -225,7 +225,7 @@ private:
 
     std::map<UInt64, RegexTreeNodePtr> regex_nodes;
     std::unordered_map<UInt64, UInt64> topology_order;
-    #if USE_VECTORSCAN
+    #if USE_HYPERSCAN
     MultiRegexps::DeferredConstructedRegexpsPtr hyperscan_regex;
     MultiRegexps::ScratchPtr origin_scratch;
     MultiRegexps::DataBasePtr origin_db;

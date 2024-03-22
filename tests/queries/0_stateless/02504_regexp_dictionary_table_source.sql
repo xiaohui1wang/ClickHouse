@@ -1,4 +1,4 @@
--- Tags: use-vectorscan
+-- Tags: use-hyperscan
 
 DROP DICTIONARY IF EXISTS regexp_dict1;
 DROP TABLE IF EXISTS regexp_dictionary_source_table;
