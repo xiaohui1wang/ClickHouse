@@ -9,9 +9,9 @@ if (OMIT_HEAVY_DEBUG_SYMBOLS)
 endif()
 
 # TODO: move Functions/Regexps.h to some lib and use here
-if (TARGET ch_contrib::vectorscan)
-    target_link_libraries(clickhouse_functions_url PRIVATE ch_contrib::vectorscan)
-    list (APPEND PRIVATE_LIBS ch_contrib::vectorscan PARENT_SCOPE)
+if (TARGET ch_contrib::hyperscan)
+    target_link_libraries(clickhouse_functions_url PRIVATE ch_contrib::hyperscan)
+    list (APPEND PRIVATE_LIBS ch_contrib::hyperscan PARENT_SCOPE)
 endif()
 
 if (USE_GPERF)

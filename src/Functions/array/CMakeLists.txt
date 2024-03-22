@@ -3,8 +3,8 @@ add_headers_and_sources(clickhouse_functions_array .)
 add_library(clickhouse_functions_array OBJECT ${clickhouse_functions_array_sources} ${clickhouse_functions_array_headers})
 target_link_libraries(clickhouse_functions_array PRIVATE dbms clickhouse_functions_gatherutils)
 
-if (TARGET ch_contrib::vectorscan)
-    target_link_libraries(clickhouse_functions_array PRIVATE ch_contrib::vectorscan)
+if (TARGET ch_contrib::hyperscan)
+    target_link_libraries(clickhouse_functions_array PRIVATE ch_contrib::hyperscan)
 endif()
 
 if (OMIT_HEAVY_DEBUG_SYMBOLS)

@@ -98,8 +98,8 @@ if (TARGET ch_contrib::h3)
     list (APPEND PRIVATE_LIBS ch_contrib::h3)
 endif()
 
-if (TARGET ch_contrib::vectorscan)
-    list (APPEND PRIVATE_LIBS ch_contrib::vectorscan)
+if (TARGET ch_contrib::hyperscan)
+    list (APPEND PRIVATE_LIBS ch_contrib::hyperscan)
 endif()
 
 if (TARGET ch_contrib::simdjson)
