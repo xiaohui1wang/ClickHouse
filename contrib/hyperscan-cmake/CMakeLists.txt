@@ -1,9 +1,10 @@
-if (HAVE_SSSE3)
+if (NOT NO_SSE3_OR_HIGHER)
     option (ENABLE_HYPERSCAN "Enable hyperscan library" ${ENABLE_LIBRARIES})
-elseif(ENABLE_HYPERSCAN)
-    message (${RECONFIGURE_MESSAGE_LEVEL} "Can't use hyperscan without SSSE3")
-    set (ENABLE_HYPERSCAN OFF)
+    message ("BBBBBBBBBBBBBBBBBBBBBBBBBBBB")
 endif ()
+
+message (STATUS ${ENABLE_HYPERSCAN})
+message ("AAAAAAAAAAAAAAAAAAAAAAAAAA")
 
 if (NOT ENABLE_HYPERSCAN)
     message (STATUS "Not using hyperscan")
@@ -152,11 +153,9 @@ set (SRCS
     "${LIBRARY_DIR}/src/parser/ComponentVisitor.cpp"
     "${LIBRARY_DIR}/src/parser/ComponentWordBoundary.cpp"
     "${LIBRARY_DIR}/src/parser/ConstComponentVisitor.cpp"
-    "${LIBRARY_DIR}/src/parser/control_verbs.cpp"
     "${LIBRARY_DIR}/src/parser/logical_combination.cpp"
     "${LIBRARY_DIR}/src/parser/parse_error.cpp"
     "${LIBRARY_DIR}/src/parser/parser_util.cpp"
-    "${LIBRARY_DIR}/src/parser/Parser.cpp"
     "${LIBRARY_DIR}/src/parser/prefilter.cpp"
     "${LIBRARY_DIR}/src/parser/shortcut_literal.cpp"
     "${LIBRARY_DIR}/src/parser/ucp_table.cpp"
@@ -215,6 +214,11 @@ set (SRCS
     "${LIBRARY_DIR}/src/util/state_compress.c"
     "${LIBRARY_DIR}/src/util/target_info.cpp"
     "${LIBRARY_DIR}/src/util/ue2string.cpp"
+)
+
+list (APPEND SRCS
+    "${LIBRARY_DIR}/../hyperscan-cmake/rageled_files/x86_64/Parser.cpp"
+    "${LIBRARY_DIR}/../hyperscan-cmake/rageled_files/x86_64/control_verbs.cpp"
 )
 
 add_library (_hyperscan ${SRCS})
