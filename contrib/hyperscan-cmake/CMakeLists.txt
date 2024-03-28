@@ -1,10 +1,6 @@
 if (NOT NO_SSE3_OR_HIGHER)
     option (ENABLE_HYPERSCAN "Enable hyperscan library" ${ENABLE_LIBRARIES})
-    message ("BBBBBBBBBBBBBBBBBBBBBBBBBBBB")
 endif ()
-
-message (STATUS ${ENABLE_HYPERSCAN})
-message ("AAAAAAAAAAAAAAAAAAAAAAAAAA")
 
 if (NOT ENABLE_HYPERSCAN)
     message (STATUS "Not using hyperscan")
