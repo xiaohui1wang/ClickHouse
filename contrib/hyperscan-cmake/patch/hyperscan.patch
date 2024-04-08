@@ -1,5 +1,5 @@
 diff --git a/src/nfagraph/ng_violet.cpp b/src/nfagraph/ng_violet.cpp
-index ba6b350..a51212d 100644
+index ba6b3501d..a51212d30 100644
 --- a/src/nfagraph/ng_violet.cpp
 +++ b/src/nfagraph/ng_violet.cpp
 @@ -375,7 +375,7 @@ void getSimpleRoseLiterals(const NGHolder &g, bool seeking_anchored,
@@ -39,7 +39,7 @@ index ba6b350..a51212d 100644
      NGHolder &h = *rv;
  
 diff --git a/src/rose/rose_build_program.cpp b/src/rose/rose_build_program.cpp
-index 96c95db..7d1d7ec 100644
+index ef3178cc6..a61c04311 100644
 --- a/src/rose/rose_build_program.cpp
 +++ b/src/rose/rose_build_program.cpp
 @@ -95,7 +95,7 @@ OffsetMap makeOffsetMap(const RoseProgram &program, u32 *total_len) {
@@ -108,7 +108,7 @@ index 96c95db..7d1d7ec 100644
      program.add_before_end(move(ri));
  }
  
-@@ -393,7 +393,7 @@ void makeDedupe(const ReportManager &rm, const Report &report,
+@@ -392,7 +392,7 @@ void makeDedupe(const ReportManager &rm, const Report &report,
                  RoseProgram &program) {
      const auto *end_inst = program.end_instruction();
      auto ri =
@@ -117,7 +117,7 @@ index 96c95db..7d1d7ec 100644
                                       report.offsetAdjust, end_inst);
      program.add_before_end(move(ri));
  }
-@@ -402,7 +402,7 @@ static
+@@ -400,7 +400,7 @@ void makeDedupe(const ReportManager &rm, const Report &report,
  void makeDedupeSom(const ReportManager &rm, const Report &report,
                     RoseProgram &program) {
      const auto *end_inst = program.end_instruction();
@@ -126,7 +126,7 @@ index 96c95db..7d1d7ec 100644
                                                rm.getDkey(report),
                                                report.offsetAdjust, end_inst);
      program.add_before_end(move(ri));
-@@ -428,7 +428,7 @@ void makeCatchup(const ReportManager &rm, bool needs_catchup,
+@@ -426,7 +426,7 @@ void makeCatchup(const ReportManager &rm, bool needs_catchup,
          return;
      }
  
@@ -134,8 +134,8 @@ index 96c95db..7d1d7ec 100644
 +    program.add_before_end(std::make_unique<RoseInstrCatchUp>());
  }
  
- static
-@@ -511,12 +511,12 @@ void addLogicalSetRequired(const Report &report, ReportManager &rm,
+ void writeSomOperation(const Report &report, som_operation *op) {
+@@ -507,12 +507,12 @@ void addLogicalSetRequired(const Report &report, ReportManager &rm,
          return;
      }
      // set matching status of current lkey
@@ -150,7 +150,7 @@ index 96c95db..7d1d7ec 100644
          program.add_before_end(move(risc));
      }
  }
-@@ -532,7 +532,7 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
+@@ -528,7 +528,7 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
  
      // Handle min/max offset checks.
      if (report.minOffset > 0 || report.maxOffset < MAX_OFFSET) {
@@ -159,7 +159,7 @@ index 96c95db..7d1d7ec 100644
                                                      report.maxOffset, end_inst);
          report_block.add_before_end(move(ri));
      }
-@@ -540,7 +540,7 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
+@@ -536,7 +536,7 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
      // If this report has an exhaustion key, we can check it in the program
      // rather than waiting until we're in the callback adaptor.
      if (report.ekey != INVALID_EKEY) {
@@ -168,7 +168,7 @@ index 96c95db..7d1d7ec 100644
          report_block.add_before_end(move(ri));
      }
  
-@@ -548,7 +548,7 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
+@@ -544,7 +544,7 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
      // calculated.
      if (isExternalSomReport(report) &&
          report.type != EXTERNAL_CALLBACK_SOM_PASS) {
@@ -177,7 +177,7 @@ index 96c95db..7d1d7ec 100644
          writeSomOperation(report, &ri->som);
          report_block.add_before_end(move(ri));
      }
-@@ -556,13 +556,13 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
+@@ -552,13 +552,13 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
      // Min length constraint.
      if (report.minLength > 0) {
          assert(build.hasSom);
@@ -193,7 +193,7 @@ index 96c95db..7d1d7ec 100644
      }
  
      switch (report.type) {
-@@ -578,7 +578,7 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
+@@ -574,7 +574,7 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
                  if (needs_dedupe) {
                      if (!report.quiet) {
                          report_block.add_before_end(
@@ -202,7 +202,7 @@ index 96c95db..7d1d7ec 100644
                                  report.quashSom, build.rm.getDkey(report),
                                  report.onmatch, report.offsetAdjust, end_inst));
                      } else {
-@@ -587,7 +587,7 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
+@@ -583,7 +583,7 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
                  } else {
                      if (!report.quiet) {
                          report_block.add_before_end(
@@ -211,7 +211,7 @@ index 96c95db..7d1d7ec 100644
                                  report.onmatch, report.offsetAdjust));
                      }
                  }
-@@ -597,28 +597,28 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
+@@ -593,28 +593,28 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
                  }
                  if (!report.quiet) {
                      report_block.add_before_end(
@@ -245,7 +245,7 @@ index 96c95db..7d1d7ec 100644
                  }
              }
          }
-@@ -639,17 +639,17 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
+@@ -635,17 +635,17 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
              addFlushCombinationProgram(report_block);
          }
          if (has_som) {
@@ -266,7 +266,7 @@ index 96c95db..7d1d7ec 100644
              report.onmatch, report.topSquashDistance));
          break;
      }
-@@ -663,17 +663,17 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
+@@ -659,17 +659,17 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
          makeDedupeSom(build.rm, report, report_block);
          if (report.ekey == INVALID_EKEY) {
              if (!report.quiet) {
@@ -287,7 +287,7 @@ index 96c95db..7d1d7ec 100644
              }
          }
          addLogicalSetRequired(report, build.rm, report_block);
-@@ -685,17 +685,17 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
+@@ -681,17 +681,17 @@ void makeReport(const RoseBuildImpl &build, const ReportID id,
          makeDedupeSom(build.rm, report, report_block);
          if (report.ekey == INVALID_EKEY) {
              if (!report.quiet) {
@@ -308,7 +308,7 @@ index 96c95db..7d1d7ec 100644
              }
          }
          addLogicalSetRequired(report, build.rm, report_block);
-@@ -722,11 +722,11 @@ void makeRoleReports(const RoseBuildImpl &build,
+@@ -718,11 +718,11 @@ void makeRoleReports(const RoseBuildImpl &build,
          assert(contains(leftfix_info, v));
          const left_build_info &lni = leftfix_info.at(v);
          program.add_before_end(
@@ -322,7 +322,7 @@ index 96c95db..7d1d7ec 100644
          report_som = true;
      }
  
-@@ -748,7 +748,7 @@ void makeRoleSetState(const unordered_map<RoseVertex, u32> &roleStateIndices,
+@@ -744,7 +744,7 @@ void makeRoleSetState(const unordered_map<RoseVertex, u32> &roleStateIndices,
      if (it == end(roleStateIndices)) {
          return;
      }
@@ -331,7 +331,7 @@ index 96c95db..7d1d7ec 100644
  }
  
  static
-@@ -772,7 +772,7 @@ void makePushDelayedInstructions(const RoseLiteralMap &literals,
+@@ -768,7 +768,7 @@ void makePushDelayedInstructions(const RoseLiteralMap &literals,
      });
  
      for (const auto &ri : delay_instructions) {
@@ -340,7 +340,7 @@ index 96c95db..7d1d7ec 100644
      }
  }
  
-@@ -801,10 +801,10 @@ void makeCheckLiteralInstruction(const rose_literal_id &lit,
+@@ -796,10 +796,10 @@ void makeCheckLiteralInstruction(const rose_literal_id &lit,
          const auto *end_inst = program.end_instruction();
          unique_ptr<RoseInstruction> ri;
          if (lit.s.any_nocase()) {
@@ -353,7 +353,7 @@ index 96c95db..7d1d7ec 100644
                                                     end_inst);
          }
          program.add_before_end(move(ri));
-@@ -820,10 +820,10 @@ void makeCheckLiteralInstruction(const rose_literal_id &lit,
+@@ -815,10 +815,10 @@ void makeCheckLiteralInstruction(const rose_literal_id &lit,
      const auto *end_inst = program.end_instruction();
      unique_ptr<RoseInstruction> ri;
      if (lit.s.any_nocase()) {
@@ -366,7 +366,7 @@ index 96c95db..7d1d7ec 100644
      }
      program.add_before_end(move(ri));
  }
-@@ -840,7 +840,7 @@ void makeRoleCheckNotHandled(ProgramBuild &prog_build, RoseVertex v,
+@@ -835,7 +835,7 @@ void makeRoleCheckNotHandled(ProgramBuild &prog_build, RoseVertex v,
      }
  
      const auto *end_inst = program.end_instruction();
@@ -375,7 +375,7 @@ index 96c95db..7d1d7ec 100644
      program.add_before_end(move(ri));
  }
  
-@@ -889,7 +889,7 @@ void makeRoleCheckBounds(const RoseBuildImpl &build, RoseVertex v,
+@@ -884,7 +884,7 @@ void makeRoleCheckBounds(const RoseBuildImpl &build, RoseVertex v,
  
      const auto *end_inst = program.end_instruction();
      program.add_before_end(
@@ -384,7 +384,7 @@ index 96c95db..7d1d7ec 100644
  }
  
  static
-@@ -924,7 +924,7 @@ void makeRoleGroups(const RoseGraph &g, ProgramBuild &prog_build,
+@@ -919,7 +919,7 @@ void makeRoleGroups(const RoseGraph &g, ProgramBuild &prog_build,
          return;
      }
  
@@ -393,7 +393,7 @@ index 96c95db..7d1d7ec 100644
  }
  
  static
-@@ -968,7 +968,7 @@ bool makeRoleByte(const vector<LookEntry> &look, RoseProgram &program) {
+@@ -963,7 +963,7 @@ bool makeRoleByte(const vector<LookEntry> &look, RoseProgram &program) {
          s32 checkbyte_offset = verify_s32(entry.offset);
          DEBUG_PRINTF("CHECK BYTE offset=%d\n", checkbyte_offset);
          const auto *end_inst = program.end_instruction();
@@ -402,7 +402,7 @@ index 96c95db..7d1d7ec 100644
                                                    checkbyte_offset, end_inst);
          program.add_before_end(move(ri));
          return true;
-@@ -1000,7 +1000,7 @@ bool makeRoleMask(const vector<LookEntry> &look, RoseProgram &program) {
+@@ -995,7 +995,7 @@ bool makeRoleMask(const vector<LookEntry> &look, RoseProgram &program) {
          DEBUG_PRINTF("CHECK MASK and_mask=%llx cmp_mask=%llx\n",
                       and_mask, cmp_mask);
          const auto *end_inst = program.end_instruction();
@@ -411,7 +411,7 @@ index 96c95db..7d1d7ec 100644
                                                    base_offset, end_inst);
          program.add_before_end(move(ri));
          return true;
-@@ -1055,7 +1055,7 @@ bool makeRoleMask32(const vector<LookEntry> &look,
+@@ -1050,7 +1050,7 @@ bool makeRoleMask32(const vector<LookEntry> &look,
      DEBUG_PRINTF("base_offset %d\n", base_offset);
  
      const auto *end_inst = program.end_instruction();
@@ -420,7 +420,7 @@ index 96c95db..7d1d7ec 100644
                                                  base_offset, end_inst);
      program.add_before_end(move(ri));
      return true;
-@@ -1098,7 +1098,7 @@ bool makeRoleMask64(const vector<LookEntry> &look,
+@@ -1088,7 +1088,7 @@ bool makeRoleMask64(const vector<LookEntry> &look, RoseProgram &program) {
      DEBUG_PRINTF("base_offset %d\n", base_offset);
  
      const auto *end_inst = program.end_instruction();
@@ -429,7 +429,7 @@ index 96c95db..7d1d7ec 100644
                                                  base_offset, end_inst);
      program.add_before_end(move(ri));
      return true;
-@@ -1235,7 +1235,7 @@ makeCheckShufti16x8(u32 offset_range, u8 bucket_idx,
+@@ -1225,7 +1225,7 @@ makeCheckShufti16x8(u32 offset_range, u8 bucket_idx,
      copy(hi_mask.begin(), hi_mask.begin() + 16, nib_mask.begin() + 16);
      copy(bucket_select_mask.begin(), bucket_select_mask.begin() + 16,
           bucket_select_mask_16.begin());
@@ -438,7 +438,7 @@ index 96c95db..7d1d7ec 100644
             (nib_mask, bucket_select_mask_16,
              neg_mask & 0xffff, base_offset, end_inst);
  }
-@@ -1255,7 +1255,7 @@ makeCheckShufti32x8(u32 offset_range, u8 bucket_idx,
+@@ -1245,7 +1245,7 @@ makeCheckShufti32x8(u32 offset_range, u8 bucket_idx,
      array<u8, 16> lo_mask_16;
      copy(hi_mask.begin(), hi_mask.begin() + 16, hi_mask_16.begin());
      copy(lo_mask.begin(), lo_mask.begin() + 16, lo_mask_16.begin());
@@ -447,7 +447,7 @@ index 96c95db..7d1d7ec 100644
             (hi_mask_16, lo_mask_16, bucket_select_mask,
              neg_mask, base_offset, end_inst);
  }
-@@ -1277,7 +1277,7 @@ makeCheckShufti16x16(u32 offset_range, u8 bucket_idx,
+@@ -1267,7 +1267,7 @@ makeCheckShufti16x16(u32 offset_range, u8 bucket_idx,
           bucket_select_mask_32.begin());
      copy(bucket_select_mask_hi.begin(), bucket_select_mask_hi.begin() + 16,
           bucket_select_mask_32.begin() + 16);
@@ -456,7 +456,7 @@ index 96c95db..7d1d7ec 100644
             (hi_mask, lo_mask, bucket_select_mask_32,
              neg_mask & 0xffff, base_offset, end_inst);
  }
-@@ -1294,7 +1294,7 @@ makeCheckShufti32x16(u32 offset_range, u8 bucket_idx,
+@@ -1284,7 +1284,7 @@ makeCheckShufti32x16(u32 offset_range, u8 bucket_idx,
          return nullptr;
      }
  
@@ -465,7 +465,7 @@ index 96c95db..7d1d7ec 100644
             (hi_mask, lo_mask, bucket_select_mask_hi,
              bucket_select_mask_lo, neg_mask, base_offset, end_inst);
  }
-@@ -1321,7 +1321,7 @@ makeCheckShufti64x8(u32 offset_range, u8 bucket_idx,
+@@ -1311,7 +1311,7 @@ makeCheckShufti64x8(u32 offset_range, u8 bucket_idx,
      copy(lo_mask.begin(), lo_mask.begin() + 16, lo_mask_64.begin() + 32);
      copy(lo_mask.begin(), lo_mask.begin() + 16, lo_mask_64.begin() + 48);
  
@@ -474,7 +474,7 @@ index 96c95db..7d1d7ec 100644
             (hi_mask_64, lo_mask_64, bucket_select_mask,
              neg_mask, base_offset, end_inst);
  }
-@@ -1361,7 +1361,7 @@ makeCheckShufti64x16(u32 offset_range, u8 bucket_idx,
+@@ -1351,7 +1351,7 @@ makeCheckShufti64x16(u32 offset_range, u8 bucket_idx,
      copy(lo_mask.begin() + 16, lo_mask.begin() + 32, lo_mask_2.begin() + 32);
      copy(lo_mask.begin() + 16, lo_mask.begin() + 32, lo_mask_2.begin() + 48);
  
@@ -483,7 +483,7 @@ index 96c95db..7d1d7ec 100644
             (hi_mask_1, hi_mask_2, lo_mask_1, lo_mask_2, bucket_select_mask_hi,
              bucket_select_mask_lo, neg_mask, base_offset, end_inst);
  }
-@@ -1486,7 +1486,7 @@ void makeLookaroundInstruction(const vector<LookEntry> &look,
+@@ -1458,7 +1458,7 @@ void makeLookaroundInstruction(const vector<LookEntry> &look,
      if (look.size() == 1) {
          s8 offset = look.begin()->offset;
          const CharReach &reach = look.begin()->reach;
@@ -492,7 +492,7 @@ index 96c95db..7d1d7ec 100644
                                                       program.end_instruction());
          program.add_before_end(move(ri));
          return;
-@@ -1508,7 +1508,7 @@ void makeLookaroundInstruction(const vector<LookEntry> &look,
+@@ -1480,7 +1480,7 @@ void makeLookaroundInstruction(const vector<LookEntry> &look,
          return;
      }
  
@@ -501,7 +501,7 @@ index 96c95db..7d1d7ec 100644
                                                      program.end_instruction());
      program.add_before_end(move(ri));
  }
-@@ -1584,7 +1584,7 @@ void makeCheckLitEarlyInstruction(const RoseBuildImpl &build, u32 lit_id,
+@@ -1556,7 +1556,7 @@ void makeCheckLitEarlyInstruction(const RoseBuildImpl &build, u32 lit_id,
  
      DEBUG_PRINTF("adding lit early check, min_offset=%u\n", min_offset);
      const auto *end = prog.end_instruction();
@@ -510,7 +510,7 @@ index 96c95db..7d1d7ec 100644
  }
  
  static
-@@ -1595,7 +1595,7 @@ void makeGroupCheckInstruction(const RoseBuildImpl &build, u32 lit_id,
+@@ -1567,7 +1567,7 @@ void makeGroupCheckInstruction(const RoseBuildImpl &build, u32 lit_id,
      if (!info.group_mask) {
          return;
      }
@@ -519,7 +519,7 @@ index 96c95db..7d1d7ec 100644
  }
  
  static
-@@ -1762,7 +1762,7 @@ bool makeRoleMultipathShufti(const vector<vector<LookEntry>> &multi_look,
+@@ -1734,7 +1734,7 @@ bool makeRoleMultipathShufti(const vector<vector<LookEntry>> &multi_look,
          copy(begin(lo_mask), begin(lo_mask) + 16, nib_mask.begin());
          copy(begin(hi_mask), begin(hi_mask) + 16, nib_mask.begin() + 16);
  
@@ -528,7 +528,7 @@ index 96c95db..7d1d7ec 100644
                    (nib_mask, bucket_select_lo, data_select_mask, hi_bits_mask,
                     lo_bits_mask, neg_mask, base_offset, last_start, end_inst);
          program.add_before_end(move(ri));
-@@ -1771,20 +1771,20 @@ bool makeRoleMultipathShufti(const vector<vector<LookEntry>> &multi_look,
+@@ -1743,20 +1743,20 @@ bool makeRoleMultipathShufti(const vector<vector<LookEntry>> &multi_look,
          assert(!(hi_bits_mask & ~0xffffffffULL));
          assert(!(lo_bits_mask & ~0xffffffffULL));
          if (bit_index <= 8) {
@@ -552,7 +552,7 @@ index 96c95db..7d1d7ec 100644
                    (hi_mask, lo_mask, bucket_select_lo, data_select_mask,
                     hi_bits_mask, lo_bits_mask, neg_mask, base_offset,
                     last_start, end_inst);
-@@ -1856,7 +1856,7 @@ void makeRoleMultipathLookaround(const vector<vector<LookEntry>> &multi_look,
+@@ -1828,7 +1828,7 @@ void makeRoleMultipathLookaround(const vector<vector<LookEntry>> &multi_look,
          ordered_look.emplace_back(multi_entry);
      }
  
@@ -561,7 +561,7 @@ index 96c95db..7d1d7ec 100644
                                                          last_start, start_mask,
                                                      program.end_instruction());
      program.add_before_end(move(ri));
-@@ -1932,7 +1932,7 @@ void makeRoleSuffix(const RoseBuildImpl &build,
+@@ -1904,7 +1904,7 @@ void makeRoleSuffix(const RoseBuildImpl &build,
          event = MQE_TOP;
      }
  
@@ -570,7 +570,7 @@ index 96c95db..7d1d7ec 100644
  }
  
  static
-@@ -1945,7 +1945,7 @@ void addInfixTriggerInstructions(vector<TriggerInfo> triggers,
+@@ -1917,7 +1917,7 @@ void addInfixTriggerInstructions(vector<TriggerInfo> triggers,
      });
      for (const auto &ti : triggers) {
          prog.add_before_end(
@@ -579,7 +579,7 @@ index 96c95db..7d1d7ec 100644
      }
  }
  
-@@ -2039,7 +2039,7 @@ static
+@@ -2011,7 +2011,7 @@ static
  void addCheckOnlyEodInstruction(RoseProgram &prog) {
      DEBUG_PRINTF("only at eod\n");
      const auto *end_inst = prog.end_instruction();
@@ -588,7 +588,7 @@ index 96c95db..7d1d7ec 100644
  }
  
  static
-@@ -2164,7 +2164,7 @@ void makeGroupSquashInstruction(const RoseBuildImpl &build, u32 lit_id,
+@@ -2136,7 +2136,7 @@ void makeGroupSquashInstruction(const RoseBuildImpl &build, u32 lit_id,
      DEBUG_PRINTF("squashes 0x%llx\n", info.group_mask);
      assert(info.group_mask);
      /* Note: group_mask is negated. */
@@ -597,7 +597,7 @@ index 96c95db..7d1d7ec 100644
  }
  
  namespace {
-@@ -2209,7 +2209,7 @@ RoseProgram assembleProgramBlocks(vector<RoseProgram> &&blocks_in) {
+@@ -2181,7 +2181,7 @@ RoseProgram assembleProgramBlocks(vector<RoseProgram> &&blocks_in) {
           * only set if a state has been. */
          if (!prog.empty() && reads_work_done_flag(block)) {
              RoseProgram clear_block;
@@ -606,7 +606,7 @@ index 96c95db..7d1d7ec 100644
              prog.add_block(move(clear_block));
          }
  
-@@ -2369,7 +2369,7 @@ void makeCatchupMpv(const ReportManager &rm, bool needs_mpv_catchup,
+@@ -2341,7 +2341,7 @@ void makeCatchupMpv(const ReportManager &rm, bool needs_mpv_catchup,
          return;
      }
  
@@ -615,7 +615,7 @@ index 96c95db..7d1d7ec 100644
  }
  
  RoseProgram makeReportProgram(const RoseBuildImpl &build,
-@@ -2402,7 +2402,7 @@ RoseProgram makeBoundaryProgram(const RoseBuildImpl &build,
+@@ -2374,7 +2374,7 @@ RoseProgram makeBoundaryProgram(const RoseBuildImpl &build,
  void addIncludedJumpProgram(RoseProgram &program, u32 child_offset,
                              u8 squash) {
      RoseProgram block;
@@ -624,7 +624,7 @@ index 96c95db..7d1d7ec 100644
                                                              squash));
      program.add_block(move(block));
  }
-@@ -2413,7 +2413,7 @@ void addPredBlockSingle(u32 pred_state, RoseProgram &pred_block,
+@@ -2385,7 +2385,7 @@ void addPredBlockSingle(u32 pred_state, RoseProgram &pred_block,
      // Prepend an instruction to check the pred state is on.
      const auto *end_inst = pred_block.end_instruction();
      pred_block.insert(begin(pred_block),
@@ -633,7 +633,7 @@ index 96c95db..7d1d7ec 100644
      program.add_block(move(pred_block));
  }
  
-@@ -2428,7 +2428,7 @@ void addPredBlocksAny(map<u32, RoseProgram> &pred_blocks, u32 num_states,
+@@ -2400,7 +2400,7 @@ void addPredBlocksAny(map<u32, RoseProgram> &pred_blocks, u32 num_states,
      }
  
      const RoseInstruction *end_inst = sparse_program.end_instruction();
@@ -642,7 +642,7 @@ index 96c95db..7d1d7ec 100644
      sparse_program.add_before_end(move(ri));
  
      RoseProgram &block = pred_blocks.begin()->second;
-@@ -2451,14 +2451,14 @@ void addPredBlocksMulti(map<u32, RoseProgram> &pred_blocks,
+@@ -2423,14 +2423,14 @@ void addPredBlocksMulti(map<u32, RoseProgram> &pred_blocks,
      vector<pair<u32, const RoseInstruction *>> jump_table;
  
      // BEGIN instruction.
@@ -659,7 +659,7 @@ index 96c95db..7d1d7ec 100644
                                                         end_inst);
          sparse_program.add_before_end(move(ri));
          prev_key = it->first;
-@@ -2539,7 +2539,7 @@ void applyFinalSpecialisation(RoseProgram &program) {
+@@ -2511,7 +2511,7 @@ void applyFinalSpecialisation(RoseProgram &program) {
      auto it = next(program.rbegin());
      if (auto *ri = dynamic_cast<const RoseInstrReport *>(it->get())) {
          DEBUG_PRINTF("replacing REPORT with FINAL_REPORT\n");
