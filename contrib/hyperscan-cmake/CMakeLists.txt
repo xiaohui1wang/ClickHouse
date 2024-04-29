@@ -217,11 +217,15 @@ list (APPEND SRCS
     "${LIBRARY_DIR}/../hyperscan-cmake/rageled_files/x86_64/control_verbs.cpp"
 )
 
+list (APPEND SRCS
+    "${LIBRARY_DIR}/src/fdr/teddy_avx2.c"
+    "${LIBRARY_DIR}/src/util/masked_move.c"
+)
+
 add_library (_hyperscan ${SRCS})
 
 target_compile_options (_hyperscan
     PRIVATE -g0 # Library has too much debug information
-    -mno-avx -mno-avx2 # The library is using dynamic dispatch and is confused if AVX is enabled globally
     -march=corei7 -O2 -fno-strict-aliasing -fno-omit-frame-pointer -fvisibility=hidden # The options from original build system
     -fno-sanitize=undefined # Assume the library takes care of itself
 )
