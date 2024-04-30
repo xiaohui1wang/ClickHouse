@@ -31,6 +31,7 @@ set (SRCS
     "${LIBRARY_DIR}/src/fdr/hoover_engine_description.cpp"
     "${LIBRARY_DIR}/src/fdr/harry_compile.cpp"
     "${LIBRARY_DIR}/src/fdr/harry_engine_description.cpp"
+    "${LIBRARY_DIR}/src/fdr/harry.c"
     "${LIBRARY_DIR}/src/fdr/hoover_compile.cpp"
     "${LIBRARY_DIR}/src/fdr/bit_selection.cpp"
     "${LIBRARY_DIR}/src/grey.cpp"
